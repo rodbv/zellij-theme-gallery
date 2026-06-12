@@ -165,7 +165,7 @@ kbd {
 nav.pager {
   display: flex;
   justify-content: space-between;
-  margin: 1.5rem 0;
+  margin: 0 0 0.8rem;
   font-family: monospace;
 }
 nav.pager a { color: var(--accent); text-decoration: none; }
@@ -182,8 +182,8 @@ nav.pager a:hover { text-decoration: underline; }
 .cta {
   background: var(--accent);
   color: #10101a;
-  border-radius: 8px;
-  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  padding: 0.55rem 1.3rem;
   font-weight: 600;
   text-decoration: none;
   flex-shrink: 0;
@@ -351,6 +351,10 @@ DETAIL_TMPL = """\
   <a class="cta" href="#use">Use this theme</a>
 </header>
 <main>
+  <nav class="pager">
+    <span>{prev_link}</span>
+    <span>{next_link}</span>
+  </nav>
   <a class="detail-img-link" href="../images/{name}.png" target="_blank" rel="noopener">
     <img class="detail-img" src="../images/{name}.png" alt="zellij {name} theme"
          width="{iw}" height="{ih}">
@@ -374,11 +378,6 @@ DETAIL_TMPL = """\
       </div>
     </div>
   </section>
-
-  <nav class="pager">
-    <span>{prev_link}</span>
-    <span>{next_link}</span>
-  </nav>
 </main>
 {footer}
 <script>
