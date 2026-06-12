@@ -8,6 +8,7 @@
 Outputs: thumbs/*.webp, index.html, themes/<name>.html, style.css
 """
 
+import hashlib
 from pathlib import Path
 
 from PIL import Image, ImageStat
@@ -285,7 +286,7 @@ INDEX_TMPL = """\
 <meta property="og:title" content="Zellij Theme Gallery">
 <meta property="og:description" content="Screenshots of all {count} zellij built-in themes">
 <meta property="og:image" content="{site}/images/dracula.png">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v={css_hash}">
 </head>
 <body>
 <header>
@@ -338,7 +339,7 @@ DETAIL_TMPL = """\
 <meta property="og:title" content="zellij theme: {name}">
 <meta property="og:description" content="Screenshot and setup command for the {name} zellij theme">
 <meta property="og:image" content="{site}/images/{name}.png">
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../style.css?v={css_hash}">
 {prefetch}
 <script>{copy_js}</script>
 </head>
@@ -421,10 +422,11 @@ def main():
         )
         for n in names
     )
+    css_hash = hashlib.md5(CSS.encode()).hexdigest()[:8]
     (ROOT / "index.html").write_text(
         INDEX_TMPL.format(
             count=len(names), cards=cards, footer=FOOTER,
-            index_js=INDEX_JS, site=SITE_URL,
+            index_js=INDEX_JS, site=SITE_URL, css_hash=css_hash,
         )
     )
 
@@ -440,7 +442,7 @@ def main():
         (detail_dir / f"{name}.html").write_text(
             DETAIL_TMPL.format(
                 name=name, site=SITE_URL, copy_js=COPY_JS, detail_js=DETAIL_JS,
-                footer=FOOTER,
+                footer=FOOTER, css_hash=css_hash,
                 iw=meta[name][3], ih=meta[name][4], prefetch=prefetch,
                 prev_link=f'<a href="{prev}.html">&larr; {prev}</a>' if prev else "",
                 next_link=f'<a href="{nxt}.html">{nxt} &rarr;</a>' if nxt else "",
