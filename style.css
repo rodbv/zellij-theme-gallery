@@ -6,6 +6,8 @@
   --accent: #7aa2f7;
   --border: #2c2c3a;
 }
+@view-transition { navigation: auto; }
+::view-transition-group(*) { animation-duration: 220ms; }
 * { box-sizing: border-box; }
 body {
   margin: 0;

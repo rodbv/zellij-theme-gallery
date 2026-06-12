@@ -26,6 +26,8 @@ CSS = """\
   --accent: #7aa2f7;
   --border: #2c2c3a;
 }
+@view-transition { navigation: auto; }
+::view-transition-group(*) { animation-duration: 220ms; }
 * { box-sizing: border-box; }
 body {
   margin: 0;
@@ -323,7 +325,8 @@ CARD_TMPL = """\
     <a class="card" data-name="{name}" data-variant="{variant}" href="themes/{name}.html">
       <span class="thumb-wrap">
         <img src="thumbs/{name}.webp" alt="zellij {name} theme"
-             width="{tw}" height="{th}" loading="lazy">
+             width="{tw}" height="{th}" loading="lazy"
+             style="view-transition-name: theme-{name}">
       </span>
       <span class="name">{name}</span>
     </a>
@@ -358,7 +361,7 @@ DETAIL_TMPL = """\
   </nav>
   <a class="detail-img-link" href="../images/{name}.png" target="_blank" rel="noopener">
     <img class="detail-img" src="../images/{name}.png" alt="zellij {name} theme"
-         width="{iw}" height="{ih}">
+         width="{iw}" height="{ih}" style="view-transition-name: theme-{name}">
   </a>
   <p class="full-hint">Click image for full resolution</p>
 
