@@ -40,27 +40,51 @@ header h1 { margin: 0 0 0.3rem; font-size: 1.6rem; }
 header p { margin: 0; color: var(--muted); }
 header a { color: var(--accent); text-decoration: none; }
 main { max-width: 1400px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.2rem;
-}
-.card {
+.search {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 0 1.2rem;
+  padding: 0.55rem 0.9rem;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 8px;
+  color: var(--fg);
+  font: inherit;
+}
+.search:focus { outline: none; border-color: var(--accent); }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 0.5rem;
+}
+.card {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
   overflow: hidden;
   text-decoration: none;
   color: var(--fg);
-  transition: transform 0.12s, border-color 0.12s;
+  transition: border-color 0.12s;
 }
-.card:hover { transform: translateY(-3px); border-color: var(--accent); }
-.card img { display: block; width: 100%; height: auto; }
+.card:hover { border-color: var(--accent); }
+.card.hidden { display: none; }
+.card img {
+  display: block;
+  width: 130px;
+  height: auto;
+  flex-shrink: 0;
+}
 .card .name {
-  padding: 0.6rem 0.9rem;
   font-family: monospace;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+.no-results { color: var(--muted); display: none; }
 .detail-img {
   width: 100%;
   height: auto;
@@ -144,17 +168,32 @@ INDEX_TMPL = """\
      screenshotted automatically. Click a theme for the full image and setup command.</p>
 </header>
 <main>
+  <input class="search" type="search" placeholder="Filter themes&hellip;" autofocus
+         oninput="filterThemes(this.value)">
   <div class="grid">
 {cards}
   </div>
+  <p class="no-results">No themes match.</p>
 </main>
 {footer}
+<script>
+function filterThemes(q) {{
+  q = q.trim().toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('.card').forEach(card => {{
+    const hit = card.dataset.name.includes(q);
+    card.classList.toggle('hidden', !hit);
+    if (hit) visible++;
+  }});
+  document.querySelector('.no-results').style.display = visible ? 'none' : 'block';
+}}
+</script>
 </body>
 </html>
 """
 
 CARD_TMPL = """\
-    <a class="card" href="themes/{name}.html">
+    <a class="card" data-name="{name}" href="themes/{name}.html">
       <img src="thumbs/{name}.webp" alt="zellij {name} theme" loading="lazy">
       <div class="name">{name}</div>
     </a>
