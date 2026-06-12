@@ -172,6 +172,26 @@ nav.pager a { color: var(--accent); text-decoration: none; }
 nav.pager a:hover { text-decoration: underline; }
 .back { color: var(--muted); text-decoration: none; display: inline-block; margin-bottom: 1rem; }
 .back:hover { color: var(--accent); }
+.detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.cta {
+  background: var(--accent);
+  color: #10101a;
+  border-radius: 8px;
+  padding: 0.55rem 1.1rem;
+  font-weight: 600;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.cta:hover { filter: brightness(1.1); }
+.cta:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+#use { scroll-margin-top: 1rem; }
+html { scroll-behavior: smooth; }
 footer {
   max-width: 1400px;
   margin: 0 auto;
@@ -323,9 +343,12 @@ DETAIL_TMPL = """\
 <script>{copy_js}</script>
 </head>
 <body>
-<header>
-  <a class="back" href="../index.html">&larr; all themes</a>
-  <h1><code>{name}</code></h1>
+<header class="detail-header">
+  <div>
+    <a class="back" href="../index.html">&larr; all themes</a>
+    <h1><code>{name}</code></h1>
+  </div>
+  <a class="cta" href="#use">Use this theme</a>
 </header>
 <main>
   <a class="detail-img-link" href="../images/{name}.png" target="_blank" rel="noopener">
@@ -334,21 +357,23 @@ DETAIL_TMPL = """\
   </a>
   <p class="full-hint">Click image for full resolution</p>
 
-  <div class="cmd-block">
-    <h2>Set permanently — add to <code>~/.config/zellij/config.kdl</code></h2>
-    <div class="cmd">
-      <code>theme "{name}"</code>
-      <button onclick="copyCmd(this)">Copy</button>
+  <section id="use">
+    <div class="cmd-block">
+      <h2>Set permanently — add to <code>~/.config/zellij/config.kdl</code></h2>
+      <div class="cmd">
+        <code>theme "{name}"</code>
+        <button onclick="copyCmd(this)">Copy</button>
+      </div>
     </div>
-  </div>
 
-  <div class="cmd-block">
-    <h2>Try it — start a new session with this theme</h2>
-    <div class="cmd">
-      <code>zellij options --theme {name}</code>
-      <button onclick="copyCmd(this)">Copy</button>
+    <div class="cmd-block">
+      <h2>Try it — start a new session with this theme</h2>
+      <div class="cmd">
+        <code>zellij options --theme {name}</code>
+        <button onclick="copyCmd(this)">Copy</button>
+      </div>
     </div>
-  </div>
+  </section>
 
   <nav class="pager">
     <span>{prev_link}</span>

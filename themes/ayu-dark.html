@@ -22,9 +22,12 @@
 </script>
 </head>
 <body>
-<header>
-  <a class="back" href="../index.html">&larr; all themes</a>
-  <h1><code>ayu-dark</code></h1>
+<header class="detail-header">
+  <div>
+    <a class="back" href="../index.html">&larr; all themes</a>
+    <h1><code>ayu-dark</code></h1>
+  </div>
+  <a class="cta" href="#use">Use this theme</a>
 </header>
 <main>
   <a class="detail-img-link" href="../images/ayu-dark.png" target="_blank" rel="noopener">
@@ -33,21 +36,23 @@
   </a>
   <p class="full-hint">Click image for full resolution</p>
 
-  <div class="cmd-block">
-    <h2>Set permanently — add to <code>~/.config/zellij/config.kdl</code></h2>
-    <div class="cmd">
-      <code>theme "ayu-dark"</code>
-      <button onclick="copyCmd(this)">Copy</button>
+  <section id="use">
+    <div class="cmd-block">
+      <h2>Set permanently — add to <code>~/.config/zellij/config.kdl</code></h2>
+      <div class="cmd">
+        <code>theme "ayu-dark"</code>
+        <button onclick="copyCmd(this)">Copy</button>
+      </div>
     </div>
-  </div>
 
-  <div class="cmd-block">
-    <h2>Try it — start a new session with this theme</h2>
-    <div class="cmd">
-      <code>zellij options --theme ayu-dark</code>
-      <button onclick="copyCmd(this)">Copy</button>
+    <div class="cmd-block">
+      <h2>Try it — start a new session with this theme</h2>
+      <div class="cmd">
+        <code>zellij options --theme ayu-dark</code>
+        <button onclick="copyCmd(this)">Copy</button>
+      </div>
     </div>
-  </div>
+  </section>
 
   <nav class="pager">
     <span><a href="atelier.html">&larr; atelier</a></span>
