@@ -4,181 +4,316 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zellij Theme Gallery</title>
+<meta property="og:title" content="Zellij Theme Gallery">
+<meta property="og:description" content="Screenshots of all 41 zellij built-in themes">
+<meta property="og:image" content="https://rodbv.github.io/zellij-theme-gallery/images/dracula.png">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
   <h1>Zellij Theme Gallery</h1>
   <p>41 built-in themes of <a href="https://zellij.dev">zellij</a>,
-     screenshotted automatically. Click a theme for the full image and setup command.</p>
+     screenshotted automatically. Click a theme for the full image and setup command.
+     Press <kbd>/</kbd> to search, <kbd>Enter</kbd> to open the first match.</p>
 </header>
 <main>
-  <input class="search" type="search" placeholder="Filter themes&hellip;" autofocus
-         oninput="filterThemes(this.value)">
+  <div class="toolbar">
+    <input class="search" type="search" placeholder="Filter themes&hellip;"
+           aria-label="Filter themes" autofocus>
+    <div class="chips" role="group" aria-label="Filter by variant">
+      <button class="chip active" data-mode="all">All</button>
+      <button class="chip" data-mode="dark">Dark</button>
+      <button class="chip" data-mode="light">Light</button>
+    </div>
+    <span class="count"></span>
+  </div>
   <div class="grid">
-    <a class="card" data-name="ansi" href="themes/ansi.html">
-      <img src="thumbs/ansi.webp" alt="zellij ansi theme" loading="lazy">
-      <div class="name">ansi</div>
+    <a class="card" data-name="ansi" data-variant="dark" href="themes/ansi.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/ansi.webp" alt="zellij ansi theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">ansi</span>
     </a>
-    <a class="card" data-name="ao" href="themes/ao.html">
-      <img src="thumbs/ao.webp" alt="zellij ao theme" loading="lazy">
-      <div class="name">ao</div>
+    <a class="card" data-name="ao" data-variant="dark" href="themes/ao.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/ao.webp" alt="zellij ao theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">ao</span>
     </a>
-    <a class="card" data-name="atelier" href="themes/atelier.html">
-      <img src="thumbs/atelier.webp" alt="zellij atelier theme" loading="lazy">
-      <div class="name">atelier</div>
+    <a class="card" data-name="atelier" data-variant="dark" href="themes/atelier.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/atelier.webp" alt="zellij atelier theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">atelier</span>
     </a>
-    <a class="card" data-name="ayu-dark" href="themes/ayu-dark.html">
-      <img src="thumbs/ayu-dark.webp" alt="zellij ayu-dark theme" loading="lazy">
-      <div class="name">ayu-dark</div>
+    <a class="card" data-name="ayu-dark" data-variant="dark" href="themes/ayu-dark.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/ayu-dark.webp" alt="zellij ayu-dark theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">ayu-dark</span>
     </a>
-    <a class="card" data-name="ayu-light" href="themes/ayu-light.html">
-      <img src="thumbs/ayu-light.webp" alt="zellij ayu-light theme" loading="lazy">
-      <div class="name">ayu-light</div>
+    <a class="card" data-name="ayu-light" data-variant="light" href="themes/ayu-light.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/ayu-light.webp" alt="zellij ayu-light theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">ayu-light</span>
     </a>
-    <a class="card" data-name="ayu-mirage" href="themes/ayu-mirage.html">
-      <img src="thumbs/ayu-mirage.webp" alt="zellij ayu-mirage theme" loading="lazy">
-      <div class="name">ayu-mirage</div>
+    <a class="card" data-name="ayu-mirage" data-variant="dark" href="themes/ayu-mirage.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/ayu-mirage.webp" alt="zellij ayu-mirage theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">ayu-mirage</span>
     </a>
-    <a class="card" data-name="blade-runner" href="themes/blade-runner.html">
-      <img src="thumbs/blade-runner.webp" alt="zellij blade-runner theme" loading="lazy">
-      <div class="name">blade-runner</div>
+    <a class="card" data-name="blade-runner" data-variant="dark" href="themes/blade-runner.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/blade-runner.webp" alt="zellij blade-runner theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">blade-runner</span>
     </a>
-    <a class="card" data-name="catppuccin-frappe" href="themes/catppuccin-frappe.html">
-      <img src="thumbs/catppuccin-frappe.webp" alt="zellij catppuccin-frappe theme" loading="lazy">
-      <div class="name">catppuccin-frappe</div>
+    <a class="card" data-name="catppuccin-frappe" data-variant="dark" href="themes/catppuccin-frappe.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/catppuccin-frappe.webp" alt="zellij catppuccin-frappe theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">catppuccin-frappe</span>
     </a>
-    <a class="card" data-name="catppuccin-latte" href="themes/catppuccin-latte.html">
-      <img src="thumbs/catppuccin-latte.webp" alt="zellij catppuccin-latte theme" loading="lazy">
-      <div class="name">catppuccin-latte</div>
+    <a class="card" data-name="catppuccin-latte" data-variant="light" href="themes/catppuccin-latte.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/catppuccin-latte.webp" alt="zellij catppuccin-latte theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">catppuccin-latte</span>
     </a>
-    <a class="card" data-name="catppuccin-macchiato" href="themes/catppuccin-macchiato.html">
-      <img src="thumbs/catppuccin-macchiato.webp" alt="zellij catppuccin-macchiato theme" loading="lazy">
-      <div class="name">catppuccin-macchiato</div>
+    <a class="card" data-name="catppuccin-macchiato" data-variant="dark" href="themes/catppuccin-macchiato.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/catppuccin-macchiato.webp" alt="zellij catppuccin-macchiato theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">catppuccin-macchiato</span>
     </a>
-    <a class="card" data-name="catppuccin-mocha" href="themes/catppuccin-mocha.html">
-      <img src="thumbs/catppuccin-mocha.webp" alt="zellij catppuccin-mocha theme" loading="lazy">
-      <div class="name">catppuccin-mocha</div>
+    <a class="card" data-name="catppuccin-mocha" data-variant="dark" href="themes/catppuccin-mocha.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/catppuccin-mocha.webp" alt="zellij catppuccin-mocha theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">catppuccin-mocha</span>
     </a>
-    <a class="card" data-name="cyber-noir" href="themes/cyber-noir.html">
-      <img src="thumbs/cyber-noir.webp" alt="zellij cyber-noir theme" loading="lazy">
-      <div class="name">cyber-noir</div>
+    <a class="card" data-name="cyber-noir" data-variant="dark" href="themes/cyber-noir.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/cyber-noir.webp" alt="zellij cyber-noir theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">cyber-noir</span>
     </a>
-    <a class="card" data-name="dayfox" href="themes/dayfox.html">
-      <img src="thumbs/dayfox.webp" alt="zellij dayfox theme" loading="lazy">
-      <div class="name">dayfox</div>
+    <a class="card" data-name="dayfox" data-variant="light" href="themes/dayfox.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/dayfox.webp" alt="zellij dayfox theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">dayfox</span>
     </a>
-    <a class="card" data-name="dracula" href="themes/dracula.html">
-      <img src="thumbs/dracula.webp" alt="zellij dracula theme" loading="lazy">
-      <div class="name">dracula</div>
+    <a class="card" data-name="dracula" data-variant="dark" href="themes/dracula.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/dracula.webp" alt="zellij dracula theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">dracula</span>
     </a>
-    <a class="card" data-name="everforest-dark" href="themes/everforest-dark.html">
-      <img src="thumbs/everforest-dark.webp" alt="zellij everforest-dark theme" loading="lazy">
-      <div class="name">everforest-dark</div>
+    <a class="card" data-name="everforest-dark" data-variant="dark" href="themes/everforest-dark.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/everforest-dark.webp" alt="zellij everforest-dark theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">everforest-dark</span>
     </a>
-    <a class="card" data-name="everforest-light" href="themes/everforest-light.html">
-      <img src="thumbs/everforest-light.webp" alt="zellij everforest-light theme" loading="lazy">
-      <div class="name">everforest-light</div>
+    <a class="card" data-name="everforest-light" data-variant="light" href="themes/everforest-light.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/everforest-light.webp" alt="zellij everforest-light theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">everforest-light</span>
     </a>
-    <a class="card" data-name="flexoki-dark" href="themes/flexoki-dark.html">
-      <img src="thumbs/flexoki-dark.webp" alt="zellij flexoki-dark theme" loading="lazy">
-      <div class="name">flexoki-dark</div>
+    <a class="card" data-name="flexoki-dark" data-variant="dark" href="themes/flexoki-dark.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/flexoki-dark.webp" alt="zellij flexoki-dark theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">flexoki-dark</span>
     </a>
-    <a class="card" data-name="gruber-darker" href="themes/gruber-darker.html">
-      <img src="thumbs/gruber-darker.webp" alt="zellij gruber-darker theme" loading="lazy">
-      <div class="name">gruber-darker</div>
+    <a class="card" data-name="gruber-darker" data-variant="dark" href="themes/gruber-darker.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/gruber-darker.webp" alt="zellij gruber-darker theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">gruber-darker</span>
     </a>
-    <a class="card" data-name="gruvbox-dark" href="themes/gruvbox-dark.html">
-      <img src="thumbs/gruvbox-dark.webp" alt="zellij gruvbox-dark theme" loading="lazy">
-      <div class="name">gruvbox-dark</div>
+    <a class="card" data-name="gruvbox-dark" data-variant="dark" href="themes/gruvbox-dark.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/gruvbox-dark.webp" alt="zellij gruvbox-dark theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">gruvbox-dark</span>
     </a>
-    <a class="card" data-name="gruvbox-light" href="themes/gruvbox-light.html">
-      <img src="thumbs/gruvbox-light.webp" alt="zellij gruvbox-light theme" loading="lazy">
-      <div class="name">gruvbox-light</div>
+    <a class="card" data-name="gruvbox-light" data-variant="light" href="themes/gruvbox-light.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/gruvbox-light.webp" alt="zellij gruvbox-light theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">gruvbox-light</span>
     </a>
-    <a class="card" data-name="iceberg-dark" href="themes/iceberg-dark.html">
-      <img src="thumbs/iceberg-dark.webp" alt="zellij iceberg-dark theme" loading="lazy">
-      <div class="name">iceberg-dark</div>
+    <a class="card" data-name="iceberg-dark" data-variant="dark" href="themes/iceberg-dark.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/iceberg-dark.webp" alt="zellij iceberg-dark theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">iceberg-dark</span>
     </a>
-    <a class="card" data-name="iceberg-light" href="themes/iceberg-light.html">
-      <img src="thumbs/iceberg-light.webp" alt="zellij iceberg-light theme" loading="lazy">
-      <div class="name">iceberg-light</div>
+    <a class="card" data-name="iceberg-light" data-variant="light" href="themes/iceberg-light.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/iceberg-light.webp" alt="zellij iceberg-light theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">iceberg-light</span>
     </a>
-    <a class="card" data-name="kanagawa" href="themes/kanagawa.html">
-      <img src="thumbs/kanagawa.webp" alt="zellij kanagawa theme" loading="lazy">
-      <div class="name">kanagawa</div>
+    <a class="card" data-name="kanagawa" data-variant="dark" href="themes/kanagawa.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/kanagawa.webp" alt="zellij kanagawa theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">kanagawa</span>
     </a>
-    <a class="card" data-name="lucario" href="themes/lucario.html">
-      <img src="thumbs/lucario.webp" alt="zellij lucario theme" loading="lazy">
-      <div class="name">lucario</div>
+    <a class="card" data-name="lucario" data-variant="dark" href="themes/lucario.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/lucario.webp" alt="zellij lucario theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">lucario</span>
     </a>
-    <a class="card" data-name="menace" href="themes/menace.html">
-      <img src="thumbs/menace.webp" alt="zellij menace theme" loading="lazy">
-      <div class="name">menace</div>
+    <a class="card" data-name="menace" data-variant="dark" href="themes/menace.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/menace.webp" alt="zellij menace theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">menace</span>
     </a>
-    <a class="card" data-name="molokai-dark" href="themes/molokai-dark.html">
-      <img src="thumbs/molokai-dark.webp" alt="zellij molokai-dark theme" loading="lazy">
-      <div class="name">molokai-dark</div>
+    <a class="card" data-name="molokai-dark" data-variant="dark" href="themes/molokai-dark.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/molokai-dark.webp" alt="zellij molokai-dark theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">molokai-dark</span>
     </a>
-    <a class="card" data-name="night-owl" href="themes/night-owl.html">
-      <img src="thumbs/night-owl.webp" alt="zellij night-owl theme" loading="lazy">
-      <div class="name">night-owl</div>
+    <a class="card" data-name="night-owl" data-variant="dark" href="themes/night-owl.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/night-owl.webp" alt="zellij night-owl theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">night-owl</span>
     </a>
-    <a class="card" data-name="nightfox" href="themes/nightfox.html">
-      <img src="thumbs/nightfox.webp" alt="zellij nightfox theme" loading="lazy">
-      <div class="name">nightfox</div>
+    <a class="card" data-name="nightfox" data-variant="dark" href="themes/nightfox.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/nightfox.webp" alt="zellij nightfox theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">nightfox</span>
     </a>
-    <a class="card" data-name="nord" href="themes/nord.html">
-      <img src="thumbs/nord.webp" alt="zellij nord theme" loading="lazy">
-      <div class="name">nord</div>
+    <a class="card" data-name="nord" data-variant="dark" href="themes/nord.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/nord.webp" alt="zellij nord theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">nord</span>
     </a>
-    <a class="card" data-name="one-half-dark" href="themes/one-half-dark.html">
-      <img src="thumbs/one-half-dark.webp" alt="zellij one-half-dark theme" loading="lazy">
-      <div class="name">one-half-dark</div>
+    <a class="card" data-name="one-half-dark" data-variant="dark" href="themes/one-half-dark.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/one-half-dark.webp" alt="zellij one-half-dark theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">one-half-dark</span>
     </a>
-    <a class="card" data-name="onedark" href="themes/onedark.html">
-      <img src="thumbs/onedark.webp" alt="zellij onedark theme" loading="lazy">
-      <div class="name">onedark</div>
+    <a class="card" data-name="onedark" data-variant="dark" href="themes/onedark.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/onedark.webp" alt="zellij onedark theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">onedark</span>
     </a>
-    <a class="card" data-name="pencil-light" href="themes/pencil-light.html">
-      <img src="thumbs/pencil-light.webp" alt="zellij pencil-light theme" loading="lazy">
-      <div class="name">pencil-light</div>
+    <a class="card" data-name="pencil-light" data-variant="light" href="themes/pencil-light.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/pencil-light.webp" alt="zellij pencil-light theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">pencil-light</span>
     </a>
-    <a class="card" data-name="retro-wave" href="themes/retro-wave.html">
-      <img src="thumbs/retro-wave.webp" alt="zellij retro-wave theme" loading="lazy">
-      <div class="name">retro-wave</div>
+    <a class="card" data-name="retro-wave" data-variant="dark" href="themes/retro-wave.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/retro-wave.webp" alt="zellij retro-wave theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">retro-wave</span>
     </a>
-    <a class="card" data-name="solarized-dark" href="themes/solarized-dark.html">
-      <img src="thumbs/solarized-dark.webp" alt="zellij solarized-dark theme" loading="lazy">
-      <div class="name">solarized-dark</div>
+    <a class="card" data-name="solarized-dark" data-variant="dark" href="themes/solarized-dark.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/solarized-dark.webp" alt="zellij solarized-dark theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">solarized-dark</span>
     </a>
-    <a class="card" data-name="solarized-light" href="themes/solarized-light.html">
-      <img src="thumbs/solarized-light.webp" alt="zellij solarized-light theme" loading="lazy">
-      <div class="name">solarized-light</div>
+    <a class="card" data-name="solarized-light" data-variant="dark" href="themes/solarized-light.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/solarized-light.webp" alt="zellij solarized-light theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">solarized-light</span>
     </a>
-    <a class="card" data-name="terafox" href="themes/terafox.html">
-      <img src="thumbs/terafox.webp" alt="zellij terafox theme" loading="lazy">
-      <div class="name">terafox</div>
+    <a class="card" data-name="terafox" data-variant="dark" href="themes/terafox.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/terafox.webp" alt="zellij terafox theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">terafox</span>
     </a>
-    <a class="card" data-name="tokyo-night-dark" href="themes/tokyo-night-dark.html">
-      <img src="thumbs/tokyo-night-dark.webp" alt="zellij tokyo-night-dark theme" loading="lazy">
-      <div class="name">tokyo-night-dark</div>
+    <a class="card" data-name="tokyo-night-dark" data-variant="dark" href="themes/tokyo-night-dark.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/tokyo-night-dark.webp" alt="zellij tokyo-night-dark theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">tokyo-night-dark</span>
     </a>
-    <a class="card" data-name="tokyo-night-light" href="themes/tokyo-night-light.html">
-      <img src="thumbs/tokyo-night-light.webp" alt="zellij tokyo-night-light theme" loading="lazy">
-      <div class="name">tokyo-night-light</div>
+    <a class="card" data-name="tokyo-night-light" data-variant="dark" href="themes/tokyo-night-light.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/tokyo-night-light.webp" alt="zellij tokyo-night-light theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">tokyo-night-light</span>
     </a>
-    <a class="card" data-name="tokyo-night-storm" href="themes/tokyo-night-storm.html">
-      <img src="thumbs/tokyo-night-storm.webp" alt="zellij tokyo-night-storm theme" loading="lazy">
-      <div class="name">tokyo-night-storm</div>
+    <a class="card" data-name="tokyo-night-storm" data-variant="dark" href="themes/tokyo-night-storm.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/tokyo-night-storm.webp" alt="zellij tokyo-night-storm theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">tokyo-night-storm</span>
     </a>
-    <a class="card" data-name="tokyo-night" href="themes/tokyo-night.html">
-      <img src="thumbs/tokyo-night.webp" alt="zellij tokyo-night theme" loading="lazy">
-      <div class="name">tokyo-night</div>
+    <a class="card" data-name="tokyo-night" data-variant="dark" href="themes/tokyo-night.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/tokyo-night.webp" alt="zellij tokyo-night theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">tokyo-night</span>
     </a>
-    <a class="card" data-name="vesper" href="themes/vesper.html">
-      <img src="thumbs/vesper.webp" alt="zellij vesper theme" loading="lazy">
-      <div class="name">vesper</div>
+    <a class="card" data-name="vesper" data-variant="dark" href="themes/vesper.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/vesper.webp" alt="zellij vesper theme"
+             width="600" height="371" loading="lazy">
+      </span>
+      <span class="name">vesper</span>
     </a>
 
   </div>
@@ -191,16 +326,49 @@
 </footer>
 
 <script>
-function filterThemes(q) {
-  q = q.trim().toLowerCase();
+const cards = [...document.querySelectorAll('.card')];
+const search = document.querySelector('.search');
+const countEl = document.querySelector('.count');
+const noResults = document.querySelector('.no-results');
+const chips = [...document.querySelectorAll('.chip')];
+let mode = 'all';
+
+function apply() {
+  const q = search.value.trim().toLowerCase();
   let visible = 0;
-  document.querySelectorAll('.card').forEach(card => {
-    const hit = card.dataset.name.includes(q);
+  for (const card of cards) {
+    const hit = card.dataset.name.includes(q) &&
+      (mode === 'all' || card.dataset.variant === mode);
     card.classList.toggle('hidden', !hit);
     if (hit) visible++;
-  });
-  document.querySelector('.no-results').style.display = visible ? 'none' : 'block';
+  }
+  noResults.style.display = visible ? 'none' : 'block';
+  countEl.textContent = visible === cards.length
+    ? `${cards.length} themes` : `${visible} / ${cards.length}`;
 }
+
+search.addEventListener('input', apply);
+for (const chip of chips) {
+  chip.addEventListener('click', () => {
+    mode = chip.dataset.mode;
+    chips.forEach(c => c.classList.toggle('active', c === chip));
+    apply();
+  });
+}
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement !== search) {
+    e.preventDefault();
+    search.focus();
+  } else if (e.key === 'Escape' && document.activeElement === search) {
+    search.value = '';
+    apply();
+  } else if (e.key === 'Enter' && document.activeElement === search) {
+    const first = cards.find(c => !c.classList.contains('hidden'));
+    if (first) location.href = first.href;
+  }
+});
+apply();
+
 </script>
 </body>
 </html>

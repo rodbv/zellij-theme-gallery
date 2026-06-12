@@ -4,7 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>pencil-light — Zellij Theme Gallery</title>
+<meta property="og:title" content="zellij theme: pencil-light">
+<meta property="og:description" content="Screenshot and setup command for the pencil-light zellij theme">
+<meta property="og:image" content="https://rodbv.github.io/zellij-theme-gallery/images/pencil-light.png">
 <link rel="stylesheet" href="../style.css">
+<link rel="prefetch" href="../images/onedark.png">
+<link rel="prefetch" href="../images/retro-wave.png">
+
 <script>function copyCmd(btn) {
   const code = btn.parentElement.querySelector('code').textContent;
   navigator.clipboard.writeText(code).then(() => {
@@ -21,7 +27,11 @@
   <h1><code>pencil-light</code></h1>
 </header>
 <main>
-  <img class="detail-img" src="../images/pencil-light.png" alt="zellij pencil-light theme">
+  <a class="detail-img-link" href="../images/pencil-light.png" target="_blank" rel="noopener">
+    <img class="detail-img" src="../images/pencil-light.png" alt="zellij pencil-light theme"
+         width="2400" height="1485">
+  </a>
+  <p class="full-hint">Click image for full resolution</p>
 
   <div class="cmd-block">
     <h2>Set permanently — add to <code>~/.config/zellij/config.kdl</code></h2>
@@ -50,5 +60,16 @@
   &middot; <a href="https://zellij.dev/documentation/themes">zellij themes docs</a>
 </footer>
 
+<script>
+const PREV = "onedark.html";
+const NEXT = "retro-wave.html";
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input, textarea')) return;
+  if (e.key === 'ArrowLeft' && PREV) location.href = PREV;
+  else if (e.key === 'ArrowRight' && NEXT) location.href = NEXT;
+  else if (e.key === 'Escape') location.href = '../index.html';
+});
+
+</script>
 </body>
 </html>

@@ -10,9 +10,10 @@ Outputs: thumbs/*.webp, index.html, themes/<name>.html, style.css
 
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageStat
 
 ROOT = Path(__file__).parent
+SITE_URL = "https://rodbv.github.io/zellij-theme-gallery"
 THUMB_WIDTH = 600
 
 CSS = """\
@@ -39,12 +40,25 @@ header {
 header h1 { margin: 0 0 0.3rem; font-size: 1.6rem; }
 header p { margin: 0; color: var(--muted); }
 header a { color: var(--accent); text-decoration: none; }
-main { max-width: 1400px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
+main { max-width: 1400px; margin: 0 auto; padding: 0.5rem 1.5rem 3rem; }
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 0;
+  margin-bottom: 0.8rem;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+}
 .search {
-  width: 100%;
-  max-width: 420px;
-  margin: 0 0 1.2rem;
-  padding: 0.55rem 0.9rem;
+  flex: 1 1 200px;
+  max-width: 360px;
+  padding: 0.5rem 0.9rem;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -52,6 +66,33 @@ main { max-width: 1400px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
   font: inherit;
 }
 .search:focus { outline: none; border-color: var(--accent); }
+.chips { display: flex; gap: 0.4rem; }
+.chip {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  padding: 0.3rem 0.9rem;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.chip:hover { border-color: var(--accent); color: var(--fg); }
+.chip.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #10101a;
+  font-weight: 600;
+}
+.count { color: var(--muted); font-size: 0.85rem; margin-left: auto; }
+kbd {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0 0.35em;
+  font-size: 0.8em;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -70,13 +111,16 @@ main { max-width: 1400px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
   transition: border-color 0.12s;
 }
 .card:hover { border-color: var(--accent); }
+.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .card.hidden { display: none; }
+.card .thumb-wrap { width: 130px; flex-shrink: 0; overflow: hidden; }
 .card img {
   display: block;
-  width: 130px;
+  width: 100%;
   height: auto;
-  flex-shrink: 0;
+  transition: transform 0.15s ease-out;
 }
+.card:hover img { transform: scale(1.06); }
 .card .name {
   font-family: monospace;
   font-size: 0.9rem;
@@ -85,12 +129,15 @@ main { max-width: 1400px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
   text-overflow: ellipsis;
 }
 .no-results { color: var(--muted); display: none; }
+
+.detail-img-link { display: block; }
 .detail-img {
   width: 100%;
   height: auto;
   border: 1px solid var(--border);
   border-radius: 10px;
 }
+.full-hint { color: var(--muted); font-size: 0.8rem; margin: 0.3rem 0 0; }
 .cmd-block { margin: 1.2rem 0; }
 .cmd-block h2 { font-size: 1rem; color: var(--muted); margin: 0 0 0.4rem; }
 .cmd {
@@ -114,6 +161,7 @@ main { max-width: 1400px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
   flex-shrink: 0;
 }
 .cmd button:active { transform: scale(0.96); }
+.cmd button:focus-visible { outline: 2px solid var(--fg); }
 nav.pager {
   display: flex;
   justify-content: space-between;
@@ -121,6 +169,7 @@ nav.pager {
   font-family: monospace;
 }
 nav.pager a { color: var(--accent); text-decoration: none; }
+nav.pager a:hover { text-decoration: underline; }
 .back { color: var(--muted); text-decoration: none; display: inline-block; margin-bottom: 1rem; }
 .back:hover { color: var(--accent); }
 footer {
@@ -133,6 +182,51 @@ footer {
 footer a { color: var(--accent); text-decoration: none; }
 """
 
+INDEX_JS = """\
+const cards = [...document.querySelectorAll('.card')];
+const search = document.querySelector('.search');
+const countEl = document.querySelector('.count');
+const noResults = document.querySelector('.no-results');
+const chips = [...document.querySelectorAll('.chip')];
+let mode = 'all';
+
+function apply() {
+  const q = search.value.trim().toLowerCase();
+  let visible = 0;
+  for (const card of cards) {
+    const hit = card.dataset.name.includes(q) &&
+      (mode === 'all' || card.dataset.variant === mode);
+    card.classList.toggle('hidden', !hit);
+    if (hit) visible++;
+  }
+  noResults.style.display = visible ? 'none' : 'block';
+  countEl.textContent = visible === cards.length
+    ? `${cards.length} themes` : `${visible} / ${cards.length}`;
+}
+
+search.addEventListener('input', apply);
+for (const chip of chips) {
+  chip.addEventListener('click', () => {
+    mode = chip.dataset.mode;
+    chips.forEach(c => c.classList.toggle('active', c === chip));
+    apply();
+  });
+}
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement !== search) {
+    e.preventDefault();
+    search.focus();
+  } else if (e.key === 'Escape' && document.activeElement === search) {
+    search.value = '';
+    apply();
+  } else if (e.key === 'Enter' && document.activeElement === search) {
+    const first = cards.find(c => !c.classList.contains('hidden'));
+    if (first) location.href = first.href;
+  }
+});
+apply();
+"""
+
 COPY_JS = """\
 function copyCmd(btn) {
   const code = btn.parentElement.querySelector('code').textContent;
@@ -142,6 +236,15 @@ function copyCmd(btn) {
     setTimeout(() => { btn.textContent = old; }, 1200);
   });
 }
+"""
+
+DETAIL_JS = """\
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input, textarea')) return;
+  if (e.key === 'ArrowLeft' && PREV) location.href = PREV;
+  else if (e.key === 'ArrowRight' && NEXT) location.href = NEXT;
+  else if (e.key === 'Escape') location.href = '../index.html';
+});
 """
 
 FOOTER = """\
@@ -159,17 +262,29 @@ INDEX_TMPL = """\
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zellij Theme Gallery</title>
+<meta property="og:title" content="Zellij Theme Gallery">
+<meta property="og:description" content="Screenshots of all {count} zellij built-in themes">
+<meta property="og:image" content="{site}/images/dracula.png">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
   <h1>Zellij Theme Gallery</h1>
   <p>{count} built-in themes of <a href="https://zellij.dev">zellij</a>,
-     screenshotted automatically. Click a theme for the full image and setup command.</p>
+     screenshotted automatically. Click a theme for the full image and setup command.
+     Press <kbd>/</kbd> to search, <kbd>Enter</kbd> to open the first match.</p>
 </header>
 <main>
-  <input class="search" type="search" placeholder="Filter themes&hellip;" autofocus
-         oninput="filterThemes(this.value)">
+  <div class="toolbar">
+    <input class="search" type="search" placeholder="Filter themes&hellip;"
+           aria-label="Filter themes" autofocus>
+    <div class="chips" role="group" aria-label="Filter by variant">
+      <button class="chip active" data-mode="all">All</button>
+      <button class="chip" data-mode="dark">Dark</button>
+      <button class="chip" data-mode="light">Light</button>
+    </div>
+    <span class="count"></span>
+  </div>
   <div class="grid">
 {cards}
   </div>
@@ -177,25 +292,19 @@ INDEX_TMPL = """\
 </main>
 {footer}
 <script>
-function filterThemes(q) {{
-  q = q.trim().toLowerCase();
-  let visible = 0;
-  document.querySelectorAll('.card').forEach(card => {{
-    const hit = card.dataset.name.includes(q);
-    card.classList.toggle('hidden', !hit);
-    if (hit) visible++;
-  }});
-  document.querySelector('.no-results').style.display = visible ? 'none' : 'block';
-}}
+{index_js}
 </script>
 </body>
 </html>
 """
 
 CARD_TMPL = """\
-    <a class="card" data-name="{name}" href="themes/{name}.html">
-      <img src="thumbs/{name}.webp" alt="zellij {name} theme" loading="lazy">
-      <div class="name">{name}</div>
+    <a class="card" data-name="{name}" data-variant="{variant}" href="themes/{name}.html">
+      <span class="thumb-wrap">
+        <img src="thumbs/{name}.webp" alt="zellij {name} theme"
+             width="{tw}" height="{th}" loading="lazy">
+      </span>
+      <span class="name">{name}</span>
     </a>
 """
 
@@ -206,7 +315,11 @@ DETAIL_TMPL = """\
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{name} — Zellij Theme Gallery</title>
+<meta property="og:title" content="zellij theme: {name}">
+<meta property="og:description" content="Screenshot and setup command for the {name} zellij theme">
+<meta property="og:image" content="{site}/images/{name}.png">
 <link rel="stylesheet" href="../style.css">
+{prefetch}
 <script>{copy_js}</script>
 </head>
 <body>
@@ -215,7 +328,11 @@ DETAIL_TMPL = """\
   <h1><code>{name}</code></h1>
 </header>
 <main>
-  <img class="detail-img" src="../images/{name}.png" alt="zellij {name} theme">
+  <a class="detail-img-link" href="../images/{name}.png" target="_blank" rel="noopener">
+    <img class="detail-img" src="../images/{name}.png" alt="zellij {name} theme"
+         width="{iw}" height="{ih}">
+  </a>
+  <p class="full-hint">Click image for full resolution</p>
 
   <div class="cmd-block">
     <h2>Set permanently — add to <code>~/.config/zellij/config.kdl</code></h2>
@@ -239,9 +356,21 @@ DETAIL_TMPL = """\
   </nav>
 </main>
 {footer}
+<script>
+const PREV = {prev_js};
+const NEXT = {next_js};
+{detail_js}
+</script>
 </body>
 </html>
 """
+
+
+def is_light(img: Image.Image) -> bool:
+    """Classify by tab-bar luminance (top strip of the screenshot)."""
+    strip = img.convert("RGB").crop((0, 0, img.width, 30))
+    r, g, b = ImageStat.Stat(strip).mean
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b > 127
 
 
 def main():
@@ -250,42 +379,57 @@ def main():
 
     thumbs = ROOT / "thumbs"
     thumbs.mkdir(exist_ok=True)
+    meta = {}  # name -> (variant, thumb_w, thumb_h, img_w, img_h)
     for img_path in images:
-        out = thumbs / f"{img_path.stem}.webp"
-        if out.exists() and out.stat().st_mtime >= img_path.stat().st_mtime:
-            continue
         img = Image.open(img_path)
         ratio = THUMB_WIDTH / img.width
-        img.resize((THUMB_WIDTH, round(img.height * ratio)), Image.LANCZOS).save(
-            out, "WEBP", quality=80
-        )
+        th = round(img.height * ratio)
+        variant = "light" if is_light(img) else "dark"
+        meta[img_path.stem] = (variant, THUMB_WIDTH, th, img.width, img.height)
 
-    cards = "".join(CARD_TMPL.format(name=n) for n in names)
+        out = thumbs / f"{img_path.stem}.webp"
+        if not (out.exists() and out.stat().st_mtime >= img_path.stat().st_mtime):
+            img.resize((THUMB_WIDTH, th), Image.LANCZOS).save(out, "WEBP", quality=80)
+
+    cards = "".join(
+        CARD_TMPL.format(
+            name=n, variant=meta[n][0], tw=meta[n][1], th=meta[n][2]
+        )
+        for n in names
+    )
     (ROOT / "index.html").write_text(
-        INDEX_TMPL.format(count=len(names), cards=cards, footer=FOOTER)
+        INDEX_TMPL.format(
+            count=len(names), cards=cards, footer=FOOTER,
+            index_js=INDEX_JS, site=SITE_URL,
+        )
     )
 
     detail_dir = ROOT / "themes"
     detail_dir.mkdir(exist_ok=True)
     for i, name in enumerate(names):
-        prev_link = (
-            f'<a href="{names[i - 1]}.html">&larr; {names[i - 1]}</a>' if i > 0 else ""
-        )
-        next_link = (
-            f'<a href="{names[i + 1]}.html">{names[i + 1]} &rarr;</a>'
-            if i < len(names) - 1
-            else ""
+        prev = names[i - 1] if i > 0 else None
+        nxt = names[i + 1] if i < len(names) - 1 else None
+        prefetch = "".join(
+            f'<link rel="prefetch" href="../images/{n}.png">\n'
+            for n in (prev, nxt) if n
         )
         (detail_dir / f"{name}.html").write_text(
             DETAIL_TMPL.format(
-                name=name, copy_js=COPY_JS, prev_link=prev_link,
-                next_link=next_link, footer=FOOTER,
+                name=name, site=SITE_URL, copy_js=COPY_JS, detail_js=DETAIL_JS,
+                footer=FOOTER,
+                iw=meta[name][3], ih=meta[name][4], prefetch=prefetch,
+                prev_link=f'<a href="{prev}.html">&larr; {prev}</a>' if prev else "",
+                next_link=f'<a href="{nxt}.html">{nxt} &rarr;</a>' if nxt else "",
+                prev_js=f'"{prev}.html"' if prev else "null",
+                next_js=f'"{nxt}.html"' if nxt else "null",
             )
         )
 
     (ROOT / "style.css").write_text(CSS)
     (ROOT / ".nojekyll").touch()
+    light = [n for n in names if meta[n][0] == "light"]
     print(f"built: index + {len(names)} detail pages + thumbs")
+    print(f"light themes ({len(light)}): {', '.join(light)}")
 
 
 if __name__ == "__main__":
