@@ -1,28 +1,62 @@
 # Zellij Theme Gallery
 
-Screenshots of all 41 [zellij](https://zellij.dev) built-in themes, generated
-fully headless — no desktop, no window flashing.
+Screenshots of all 41 [zellij](https://zellij.dev) built-in themes — captured
+fully headless, no desktop session or window flashing required.
 
-**Browse the gallery: <https://rodbv.github.io/zellij-theme-gallery/>**
+**Browse: <https://rodbv.github.io/zellij-theme-gallery/>**
 
-Each theme page shows a full screenshot plus copy-paste commands to set the
-theme permanently (`config.kdl`) or try it in a new session.
+[![dracula theme](thumbs/dracula.webp)](https://rodbv.github.io/zellij-theme-gallery/themes/dracula.html)
+
+The gallery has a searchable index with dark/light filters, and a detail page
+per theme with the full screenshot and copy-paste commands to apply it.
+
+## Why
+
+Zellij ships 41 themes but no way to preview them without applying each one.
+This repo screenshots them all automatically so you can pick by looking.
 
 ## How it works
 
-- [`theme_gallery.py`](theme_gallery.py) runs zellij inside an isolated tmux
-  server per theme, captures the ANSI screen with `tmux capture-pane -e`, and
-  renders it to PNG with Pillow (JetBrainsMono Nerd Font). Panes run sample
-  scripts via a 3-pane layout so the theme's chrome (frames, tab bar, status
-  bar) is visible.
-- [`build.py`](build.py) generates WebP thumbnails and the static HTML site
-  from `images/*.png`.
+No GUI is involved at any point:
 
-## Regenerate
+1. **[`theme_gallery.py`](theme_gallery.py)** starts zellij inside an isolated
+   tmux server (own socket, your sessions untouched) once per theme, using a
+   3-pane layout whose panes print sample content — file listing, ANSI
+   palette swatches, git log.
+2. `tmux capture-pane -e` dumps the rendered screen *with* ANSI color codes;
+   tmux acts as the headless terminal emulator. Zellij themes are truecolor,
+   so captured chrome colors are exact.
+3. A small SGR parser renders the captured screen to PNG with Pillow using a
+   Nerd Font (zellij's arrow glyphs render correctly).
+4. **[`build.py`](build.py)** generates WebP thumbnails and the static HTML
+   site, classifying each theme dark/light by sampling its tab-bar luminance.
 
-Requires: `zellij`, `tmux`, `uv`, ImageMagick, a Nerd Font.
+## Usage
+
+Requirements: `zellij`, `tmux`, [`uv`](https://docs.astral.sh/uv/),
+ImageMagick (`magick`), a Nerd Font (default: JetBrainsMono Nerd Font).
 
 ```bash
-./theme_gallery.py --out images   # screenshot all themes (~4 min)
-./build.py                        # rebuild thumbs + HTML
+# screenshot every built-in theme (~4 min)
+./theme_gallery.py --out images
+
+# or just a few
+./theme_gallery.py --themes dracula,nord,kanagawa --out /tmp/preview
+
+# rebuild thumbnails + HTML
+./build.py
 ```
+
+Both scripts are single-file `uv run` scripts — dependencies (Pillow) are
+declared inline and installed on first run.
+
+### Options
+
+| Flag | Default | Description |
+|---|---|---|
+| `--themes a,b,c` | all 41 | subset of themes to capture |
+| `--out DIR` | `~/Pictures/zellij-themes` | output directory |
+
+## License
+
+[MIT](LICENSE)
