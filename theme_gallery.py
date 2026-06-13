@@ -39,7 +39,7 @@ THEMES = [
 ]
 
 TMUX_SOCKET = "zjgallery"
-COLS, ROWS = 100, 30
+COLS, ROWS = 80, 27
 FONT_NAME = "JetBrainsMono Nerd Font"
 FONT_SIZE = 16
 READY_TIMEOUT = 10.0
