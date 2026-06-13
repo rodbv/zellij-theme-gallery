@@ -103,8 +103,7 @@ kbd {
 }
 .card {
   display: flex;
-  align-items: center;
-  gap: 0.8rem;
+  align-items: stretch;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -124,12 +123,27 @@ kbd {
   transition: transform 0.15s ease-out;
 }
 .card:hover img { transform: scale(1.06); }
+.card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  align-self: stretch;
+  padding: 0.6rem 0.8rem 0;
+}
 .card .name {
   font-family: monospace;
   font-size: 0.9rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.color-strip {
+  display: block;
+  height: 6px;
+  border-radius: 0 0 3px 3px;
+  margin: 0 -0.8rem;
 }
 .no-results { color: var(--muted); display: none; }
 
@@ -324,11 +338,14 @@ INDEX_TMPL = """\
 CARD_TMPL = """\
     <a class="card" data-name="{name}" data-variant="{variant}" href="themes/{name}.html">
       <span class="thumb-wrap">
-        <img src="thumbs/{name}.webp" alt="zellij {name} theme"
+        <img src="thumbs/{name}.webp?v={img_hash}" alt="zellij {name} theme"
              width="{tw}" height="{th}" loading="lazy"
              style="view-transition-name: theme-{name}">
       </span>
-      <span class="name">{name}</span>
+      <span class="card-info">
+        <span class="name">{name}</span>
+        <span class="color-strip" style="background:{gradient}"></span>
+      </span>
     </a>
 """
 
@@ -359,8 +376,8 @@ DETAIL_TMPL = """\
     <span>{prev_link}</span>
     <span>{next_link}</span>
   </nav>
-  <a class="detail-img-link" href="../images/{name}.png" target="_blank" rel="noopener">
-    <img class="detail-img" src="../images/{name}.png" alt="zellij {name} theme"
+  <a class="detail-img-link" href="../images/{name}.png?v={img_hash}" target="_blank" rel="noopener">
+    <img class="detail-img" src="../images/{name}.png?v={img_hash}" alt="zellij {name} theme"
          width="{iw}" height="{ih}" style="view-transition-name: theme-{name}">
   </a>
   <p class="full-hint">Click image for full resolution</p>
@@ -401,19 +418,32 @@ def is_light(img: Image.Image) -> bool:
     return 0.2126 * r + 0.7152 * g + 0.0722 * b > 127
 
 
+def tab_bar_gradient(img: Image.Image, n: int = 16) -> str:
+    """Sample n evenly-spaced pixels from the tab-bar row, return CSS gradient."""
+    rgb = img.convert("RGB")
+    w = img.width
+    y = 11  # mid tab-bar (first ~22px row)
+    step = w // n
+    colors = [rgb.getpixel((step * i + step // 2, y)) for i in range(n)]
+    stops = ", ".join(f"#{r:02x}{g:02x}{b:02x}" for r, g, b in colors)
+    return f"linear-gradient(to right, {stops})"
+
+
 def main():
     images = sorted((ROOT / "images").glob("*.png"))
     names = [p.stem for p in images]
 
     thumbs = ROOT / "thumbs"
     thumbs.mkdir(exist_ok=True)
-    meta = {}  # name -> (variant, thumb_w, thumb_h, img_w, img_h)
+    meta = {}  # name -> (variant, thumb_w, thumb_h, img_w, img_h, img_hash)
     for img_path in images:
         img = Image.open(img_path)
         ratio = THUMB_WIDTH / img.width
         th = round(img.height * ratio)
         variant = "light" if is_light(img) else "dark"
-        meta[img_path.stem] = (variant, THUMB_WIDTH, th, img.width, img.height)
+        img_hash = hashlib.md5(img_path.read_bytes()).hexdigest()[:8]
+        gradient = tab_bar_gradient(img)
+        meta[img_path.stem] = (variant, THUMB_WIDTH, th, img.width, img.height, img_hash, gradient)
 
         out = thumbs / f"{img_path.stem}.webp"
         if not (out.exists() and out.stat().st_mtime >= img_path.stat().st_mtime):
@@ -421,7 +451,8 @@ def main():
 
     cards = "".join(
         CARD_TMPL.format(
-            name=n, variant=meta[n][0], tw=meta[n][1], th=meta[n][2]
+            name=n, variant=meta[n][0], tw=meta[n][1], th=meta[n][2],
+            img_hash=meta[n][5], gradient=meta[n][6],
         )
         for n in names
     )
@@ -446,7 +477,7 @@ def main():
             DETAIL_TMPL.format(
                 name=name, site=SITE_URL, copy_js=COPY_JS, detail_js=DETAIL_JS,
                 footer=FOOTER, css_hash=css_hash,
-                iw=meta[name][3], ih=meta[name][4], prefetch=prefetch,
+                iw=meta[name][3], ih=meta[name][4], img_hash=meta[name][5], prefetch=prefetch,
                 prev_link=f'<a href="{prev}.html">&larr; {prev}</a>' if prev else "",
                 next_link=f'<a href="{nxt}.html">{nxt} &rarr;</a>' if nxt else "",
                 prev_js=f'"{prev}.html"' if prev else "null",

@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>lucario — Zellij Theme Gallery</title>
-<meta property="og:title" content="zellij theme: lucario">
-<meta property="og:description" content="Screenshot and setup command for the lucario zellij theme">
-<meta property="og:image" content="https://rodbv.github.io/zellij-theme-gallery/images/lucario.png">
+<title>gallery — Zellij Theme Gallery</title>
+<meta property="og:title" content="zellij theme: gallery">
+<meta property="og:description" content="Screenshot and setup command for the gallery zellij theme">
+<meta property="og:image" content="https://rodbv.github.io/zellij-theme-gallery/images/gallery.png">
 <link rel="stylesheet" href="../style.css?v=ce00699d">
-<link rel="prefetch" href="../images/kanagawa.png">
-<link rel="prefetch" href="../images/menace.png">
+<link rel="prefetch" href="../images/flexoki-dark.png">
+<link rel="prefetch" href="../images/gruber-darker.png">
 
 <script>function copyCmd(btn) {
   const code = btn.parentElement.querySelector('code').textContent;
@@ -25,18 +25,18 @@
 <header class="detail-header">
   <div>
     <a class="back" href="../index.html">&larr; all themes</a>
-    <h1><code>lucario</code></h1>
+    <h1><code>gallery</code></h1>
   </div>
   <a class="cta" href="#use">Use this theme</a>
 </header>
 <main>
   <nav class="pager">
-    <span><a href="kanagawa.html">&larr; kanagawa</a></span>
-    <span><a href="menace.html">menace &rarr;</a></span>
+    <span><a href="flexoki-dark.html">&larr; flexoki-dark</a></span>
+    <span><a href="gruber-darker.html">gruber-darker &rarr;</a></span>
   </nav>
-  <a class="detail-img-link" href="../images/lucario.png?v=fbcc317c" target="_blank" rel="noopener">
-    <img class="detail-img" src="../images/lucario.png?v=fbcc317c" alt="zellij lucario theme"
-         width="800" height="594" style="view-transition-name: theme-lucario">
+  <a class="detail-img-link" href="../images/gallery.png?v=639d99ca" target="_blank" rel="noopener">
+    <img class="detail-img" src="../images/gallery.png?v=639d99ca" alt="zellij gallery theme"
+         width="2460" height="8890" style="view-transition-name: theme-gallery">
   </a>
   <p class="full-hint">Click image for full resolution</p>
 
@@ -44,7 +44,7 @@
     <div class="cmd-block">
       <h2>Set permanently — add to <code>~/.config/zellij/config.kdl</code></h2>
       <div class="cmd">
-        <code>theme "lucario"</code>
+        <code>theme "gallery"</code>
         <button onclick="copyCmd(this)">Copy</button>
       </div>
     </div>
@@ -52,7 +52,7 @@
     <div class="cmd-block">
       <h2>Try it — start a new session with this theme</h2>
       <div class="cmd">
-        <code>zellij options --theme lucario</code>
+        <code>zellij options --theme gallery</code>
         <button onclick="copyCmd(this)">Copy</button>
       </div>
     </div>
@@ -65,8 +65,8 @@
 </footer>
 
 <script>
-const PREV = "kanagawa.html";
-const NEXT = "menace.html";
+const PREV = "flexoki-dark.html";
+const NEXT = "gruber-darker.html";
 document.addEventListener('keydown', e => {
   if (e.target.closest('input, textarea')) return;
   if (e.key === 'ArrowLeft' && PREV) location.href = PREV;

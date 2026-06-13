@@ -83,8 +83,7 @@ kbd {
 }
 .card {
   display: flex;
-  align-items: center;
-  gap: 0.8rem;
+  align-items: stretch;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -104,12 +103,27 @@ kbd {
   transition: transform 0.15s ease-out;
 }
 .card:hover img { transform: scale(1.06); }
+.card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  align-self: stretch;
+  padding: 0.6rem 0.8rem 0;
+}
 .card .name {
   font-family: monospace;
   font-size: 0.9rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.color-strip {
+  display: block;
+  height: 6px;
+  border-radius: 0 0 3px 3px;
+  margin: 0 -0.8rem;
 }
 .no-results { color: var(--muted); display: none; }
 
