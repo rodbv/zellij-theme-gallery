@@ -15,7 +15,7 @@
 <meta name="twitter:title" content="Zellij Theme Gallery">
 <meta name="twitter:description" content="Screenshots of all 41 zellij built-in themes">
 <meta name="twitter:image" content="https://rodbv.github.io/zellij-theme-gallery/images/dracula.png">
-<link rel="stylesheet" href="style.css?v=62185941">
+<link rel="stylesheet" href="style.css?v=d41d4013">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"Zellij Theme Gallery","url":"https://rodbv.github.io/zellij-theme-gallery/","description":"Screenshots of all 41 zellij built-in themes"}
 </script>
@@ -23,7 +23,6 @@
 <body>
 <a href="#main-content" class="skip-link">Skip to content</a>
 <header>
-  <button id="theme-toggle" aria-label="Toggle colour scheme"></button>
   <h1>Zellij Theme Gallery</h1>
   <p>41 built-in themes of <a href="https://zellij.dev">zellij</a>,
      screenshotted automatically. Click a theme for the full image and setup command.
@@ -380,26 +379,6 @@
 </footer>
 
 <script>
-(function() {
-  const KEY = 'zjgallery-theme';
-  const root = document.documentElement;
-  const btn = document.getElementById('theme-toggle');
-  function isLight() {
-    return root.dataset.theme === 'light' ||
-      (!root.dataset.theme && window.matchMedia('(prefers-color-scheme: light)').matches);
-  }
-  function applyIcon() { btn.textContent = isLight() ? '☾' : '☀'; }
-  const saved = localStorage.getItem(KEY);
-  if (saved) root.dataset.theme = saved;
-  applyIcon();
-  btn.addEventListener('click', () => {
-    const next = isLight() ? 'dark' : 'light';
-    root.dataset.theme = next;
-    localStorage.setItem(KEY, next);
-    applyIcon();
-  });
-})();
-
 const cards = [...document.querySelectorAll('.card')];
 const search = document.querySelector('.search');
 const countEl = document.querySelector('.count');

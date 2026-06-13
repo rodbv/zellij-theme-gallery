@@ -19,30 +19,12 @@ THUMB_WIDTH = 600
 
 CSS = """\
 :root {
-  --bg: #14141c;
-  --card: #1d1d28;
+  --bg: #13131e;
+  --card: #1c1c2a;
   --fg: #d8d8e0;
   --muted: #8a8a99;
-  --accent: #7aa2f7;
-  --border: #2c2c3a;
-}
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --bg: #f2f2f7;
-    --card: #ffffff;
-    --fg: #1c1c2e;
-    --muted: #6b6b80;
-    --accent: #3d6fd4;
-    --border: #d4d4e0;
-  }
-}
-:root[data-theme="light"] {
-  --bg: #f2f2f7;
-  --card: #ffffff;
-  --fg: #1c1c2e;
-  --muted: #6b6b80;
-  --accent: #3d6fd4;
-  --border: #d4d4e0;
+  --accent: #7b9fc4;
+  --border: #2a2a3a;
 }
 @view-transition { navigation: auto; }
 ::view-transition-group(*) { animation-duration: 220ms; }
@@ -247,48 +229,6 @@ footer a { color: var(--accent); text-decoration: none; }
   text-decoration: none;
 }
 .skip-link:focus { left: 0.5rem; }
-header { position: relative; }
-#theme-toggle {
-  position: absolute;
-  top: 1.2rem;
-  right: 1.5rem;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  width: 2rem;
-  height: 2rem;
-  font-size: 1rem;
-  line-height: 1;
-  cursor: pointer;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.15s, border-color 0.15s;
-}
-#theme-toggle:hover { color: var(--fg); border-color: var(--accent); }
-"""
-
-THEME_JS = """\
-(function() {
-  const KEY = 'zjgallery-theme';
-  const root = document.documentElement;
-  const btn = document.getElementById('theme-toggle');
-  function isLight() {
-    return root.dataset.theme === 'light' ||
-      (!root.dataset.theme && window.matchMedia('(prefers-color-scheme: light)').matches);
-  }
-  function applyIcon() { btn.textContent = isLight() ? '☾' : '☀'; }
-  const saved = localStorage.getItem(KEY);
-  if (saved) root.dataset.theme = saved;
-  applyIcon();
-  btn.addEventListener('click', () => {
-    const next = isLight() ? 'dark' : 'light';
-    root.dataset.theme = next;
-    localStorage.setItem(KEY, next);
-    applyIcon();
-  });
-})();
 """
 
 INDEX_JS = """\
@@ -390,7 +330,6 @@ INDEX_TMPL = """\
 <body>
 <a href="#main-content" class="skip-link">Skip to content</a>
 <header>
-  <button id="theme-toggle" aria-label="Toggle colour scheme"></button>
   <h1>Zellij Theme Gallery</h1>
   <p>{count} built-in themes of <a href="https://zellij.dev">zellij</a>,
      screenshotted automatically. Click a theme for the full image and setup command.
@@ -414,7 +353,6 @@ INDEX_TMPL = """\
 </main>
 {footer}
 <script>
-{theme_js}
 {index_js}
 </script>
 </body>
@@ -456,7 +394,6 @@ DETAIL_TMPL = """\
 <body>
 <a href="#main-content" class="skip-link">Skip to content</a>
 <header class="detail-header">
-  <button id="theme-toggle" aria-label="Toggle colour scheme"></button>
   <div>
     <a class="back" href="../index.html">&larr; all themes</a>
     <h1><code>{name}</code></h1>
@@ -495,7 +432,6 @@ DETAIL_TMPL = """\
 </main>
 {footer}
 <script>
-{theme_js}
 const PREV = {prev_js};
 const NEXT = {next_js};
 {detail_js}
@@ -547,7 +483,7 @@ def main():
     (ROOT / "index.html").write_text(
         INDEX_TMPL.format(
             count=len(names), cards=cards, footer=FOOTER,
-            index_js=INDEX_JS, theme_js=THEME_JS, site=SITE_URL, css_hash=css_hash,
+            index_js=INDEX_JS, site=SITE_URL, css_hash=css_hash,
         )
     )
 
@@ -563,7 +499,7 @@ def main():
         (detail_dir / f"{name}.html").write_text(
             DETAIL_TMPL.format(
                 name=name, site=SITE_URL, copy_js=COPY_JS, detail_js=DETAIL_JS,
-                theme_js=THEME_JS, footer=FOOTER, css_hash=css_hash,
+                footer=FOOTER, css_hash=css_hash,
                 iw=meta[name][3], ih=meta[name][4], img_hash=meta[name][5], prefetch=prefetch,
                 prev_link=f'<a href="{prev}.html">&larr; Prev: {prev}</a>',
                 next_link=f'<a href="{nxt}.html">Next: {nxt} &rarr;</a>',

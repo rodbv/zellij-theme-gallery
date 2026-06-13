@@ -14,7 +14,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="zellij theme: cyber-noir">
 <meta name="twitter:image" content="https://rodbv.github.io/zellij-theme-gallery/images/cyber-noir.png">
-<link rel="stylesheet" href="../style.css?v=62185941">
+<link rel="stylesheet" href="../style.css?v=d41d4013">
 <link rel="prefetch" href="../images/catppuccin-mocha.png">
 <link rel="prefetch" href="../images/dayfox.png">
 
@@ -31,7 +31,6 @@
 <body>
 <a href="#main-content" class="skip-link">Skip to content</a>
 <header class="detail-header">
-  <button id="theme-toggle" aria-label="Toggle colour scheme"></button>
   <div>
     <a class="back" href="../index.html">&larr; all themes</a>
     <h1><code>cyber-noir</code></h1>
@@ -75,26 +74,6 @@
 </footer>
 
 <script>
-(function() {
-  const KEY = 'zjgallery-theme';
-  const root = document.documentElement;
-  const btn = document.getElementById('theme-toggle');
-  function isLight() {
-    return root.dataset.theme === 'light' ||
-      (!root.dataset.theme && window.matchMedia('(prefers-color-scheme: light)').matches);
-  }
-  function applyIcon() { btn.textContent = isLight() ? '☾' : '☀'; }
-  const saved = localStorage.getItem(KEY);
-  if (saved) root.dataset.theme = saved;
-  applyIcon();
-  btn.addEventListener('click', () => {
-    const next = isLight() ? 'dark' : 'light';
-    root.dataset.theme = next;
-    localStorage.setItem(KEY, next);
-    applyIcon();
-  });
-})();
-
 const PREV = "catppuccin-mocha.html";
 const NEXT = "dayfox.html";
 document.addEventListener('keydown', e => {

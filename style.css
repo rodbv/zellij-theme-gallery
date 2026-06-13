@@ -1,28 +1,10 @@
 :root {
-  --bg: #14141c;
-  --card: #1d1d28;
+  --bg: #13131e;
+  --card: #1c1c2a;
   --fg: #d8d8e0;
   --muted: #8a8a99;
-  --accent: #7aa2f7;
-  --border: #2c2c3a;
-}
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --bg: #f2f2f7;
-    --card: #ffffff;
-    --fg: #1c1c2e;
-    --muted: #6b6b80;
-    --accent: #3d6fd4;
-    --border: #d4d4e0;
-  }
-}
-:root[data-theme="light"] {
-  --bg: #f2f2f7;
-  --card: #ffffff;
-  --fg: #1c1c2e;
-  --muted: #6b6b80;
-  --accent: #3d6fd4;
-  --border: #d4d4e0;
+  --accent: #7b9fc4;
+  --border: #2a2a3a;
 }
 @view-transition { navigation: auto; }
 ::view-transition-group(*) { animation-duration: 220ms; }
@@ -227,23 +209,3 @@ footer a { color: var(--accent); text-decoration: none; }
   text-decoration: none;
 }
 .skip-link:focus { left: 0.5rem; }
-header { position: relative; }
-#theme-toggle {
-  position: absolute;
-  top: 1.2rem;
-  right: 1.5rem;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  width: 2rem;
-  height: 2rem;
-  font-size: 1rem;
-  line-height: 1;
-  cursor: pointer;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.15s, border-color 0.15s;
-}
-#theme-toggle:hover { color: var(--fg); border-color: var(--accent); }
