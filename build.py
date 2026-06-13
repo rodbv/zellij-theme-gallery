@@ -8,6 +8,7 @@
 Outputs: thumbs/*.webp, index.html, themes/<name>.html, style.css
 """
 
+import colorsys
 import hashlib
 from pathlib import Path
 
@@ -139,11 +140,17 @@ kbd {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.color-strip {
-  display: block;
-  height: 6px;
-  border-radius: 0 0 3px 3px;
-  margin: 0 -0.8rem;
+.color-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 0.5rem;
+}
+.color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 .no-results { color: var(--muted); display: none; }
 
@@ -344,7 +351,7 @@ CARD_TMPL = """\
       </span>
       <span class="card-info">
         <span class="name">{name}</span>
-        <span class="color-strip" style="background:{gradient}"></span>
+        <span class="color-dots">{dots}</span>
       </span>
     </a>
 """
@@ -418,19 +425,27 @@ def is_light(img: Image.Image) -> bool:
     return 0.2126 * r + 0.7152 * g + 0.0722 * b > 127
 
 
-def tab_bar_gradient(img: Image.Image, n: int = 16) -> str:
-    """Sample n evenly-spaced pixels from the tab-bar row, return CSS gradient."""
-    rgb = img.convert("RGB")
-    w = img.width
-    y = 11  # mid tab-bar (first ~22px row)
-    step = w // n
-    colors = [rgb.getpixel((step * i + step // 2, y)) for i in range(n)]
-    stops = ", ".join(f"#{r:02x}{g:02x}{b:02x}" for r, g, b in colors)
-    return f"linear-gradient(to right, {stops})"
+def theme_colors(img: Image.Image, max_colors: int = 6, min_dist: int = 25) -> list:
+    """Distinct colors from the zellij tab-bar (top strip), vivid colors first."""
+    tab_bar = img.convert("RGB").crop((0, 0, img.width, 22))
+    q = tab_bar.quantize(colors=max_colors, method=Image.Quantize.MEDIANCUT)
+    palette = q.getpalette()
+    all_colors = [(palette[i * 3], palette[i * 3 + 1], palette[i * 3 + 2])
+                  for i in range(max_colors)]
+    def chroma(rgb):
+        r, g, b = [x / 255 for x in rgb]
+        _, s, v = colorsys.rgb_to_hsv(r, g, b)
+        return s * v
+    result = []
+    for r, g, b in sorted(all_colors, key=chroma, reverse=True):
+        if all((r - er) ** 2 + (g - eg) ** 2 + (b - eb) ** 2 >= min_dist ** 2
+               for er, eg, eb in result):
+            result.append((r, g, b))
+    return result
 
 
 def main():
-    images = sorted((ROOT / "images").glob("*.png"))
+    images = sorted(p for p in (ROOT / "images").glob("*.png") if p.stem != "gallery")
     names = [p.stem for p in images]
 
     thumbs = ROOT / "thumbs"
@@ -442,8 +457,12 @@ def main():
         th = round(img.height * ratio)
         variant = "light" if is_light(img) else "dark"
         img_hash = hashlib.md5(img_path.read_bytes()).hexdigest()[:8]
-        gradient = tab_bar_gradient(img)
-        meta[img_path.stem] = (variant, THUMB_WIDTH, th, img.width, img.height, img_hash, gradient)
+        colors = theme_colors(img)
+        dots = "".join(
+            f'<span class="color-dot" style="background:#{r:02x}{g:02x}{b:02x}" title="#{r:02x}{g:02x}{b:02x}"></span>'
+            for r, g, b in colors
+        )
+        meta[img_path.stem] = (variant, THUMB_WIDTH, th, img.width, img.height, img_hash, dots)
 
         out = thumbs / f"{img_path.stem}.webp"
         if not (out.exists() and out.stat().st_mtime >= img_path.stat().st_mtime):
@@ -452,7 +471,7 @@ def main():
     cards = "".join(
         CARD_TMPL.format(
             name=n, variant=meta[n][0], tw=meta[n][1], th=meta[n][2],
-            img_hash=meta[n][5], gradient=meta[n][6],
+            img_hash=meta[n][5], dots=meta[n][6],
         )
         for n in names
     )
