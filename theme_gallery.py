@@ -39,9 +39,9 @@ THEMES = [
 ]
 
 TMUX_SOCKET = "zjgallery"
-COLS, ROWS = 200, 55
+COLS, ROWS = 100, 30
 FONT_NAME = "JetBrainsMono Nerd Font"
-FONT_SIZE = 20
+FONT_SIZE = 16
 READY_TIMEOUT = 10.0
 
 # ptyxis default (GNOME) 16-color palette — pane content colors.
