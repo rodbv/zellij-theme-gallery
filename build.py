@@ -360,8 +360,8 @@ INDEX_TMPL = """\
     <img src="zellij-logo.png" alt="Zellij logo" class="site-logo">
     <h1><span class="prompt">❯</span>Zellij Theme Gallery</h1>
   </div>
-  <p>{count} built-in themes of <a href="https://zellij.dev">zellij</a>,
-     screenshotted automatically. Click a theme for the full image and setup command.
+  <p>All {count} built-in <a href="https://zellij.dev">zellij</a> themes.
+     Click any to preview and copy the setup command.
      Press <kbd>/</kbd> to search, <kbd>Enter</kbd> to open the first match.</p>
 </header>
 <main id="main-content">
