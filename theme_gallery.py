@@ -62,18 +62,11 @@ layout {{
         pane size=1 borderless=true {{
             plugin location="zellij:tab-bar"
         }}
-        pane split_direction="vertical" {{
-            pane name="src" focus=true size="50%" command="bash" {{
-                args "{left}"
-            }}
-            pane size="50%" {{
-                pane name="palette" size="50%" command="bash" {{
-                    args "{right}"
-                }}
-                pane name="git log" size="50%" command="bash" {{
-                    args "{bottom}"
-                }}
-            }}
+        pane name="src" focus=true size="70%" command="bash" {{
+            args "{left}"
+        }}
+        pane name="git log" size="30%" command="bash" {{
+            args "{bottom}"
         }}
         pane size=1 borderless=true {{
             plugin location="zellij:status-bar"
@@ -166,7 +159,7 @@ def shoot_theme(theme: str, tmux_conf: str, layout: str) -> str | None:
         if not wait_ready():
             return None
         # Sample output rendered in all panes.
-        wait_screen(lambda s: "ANSI palette" in s and "abc1234" in s)
+        wait_screen(lambda s: "abc1234" in s and "src/" in s)
         time.sleep(0.5)
 
         return capture()
