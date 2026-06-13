@@ -24,7 +24,9 @@ CSS = """\
   --fg: #d8d8e0;
   --muted: #8a8a99;
   --accent: #7b9fc4;
+  --green: #8cab79;
   --border: #2a2a3a;
+  --mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
 }
 @view-transition { navigation: auto; }
 ::view-transition-group(*) { animation-duration: 220ms; }
@@ -35,13 +37,34 @@ body {
   color: var(--fg);
   font: 16px/1.5 system-ui, sans-serif;
 }
+h1, h2, .name, code, kbd, .cmd code {
+  font-family: var(--mono);
+}
 header {
-  padding: 2rem 1.5rem 1rem;
+  padding: 2rem 1.5rem 1.2rem;
   max-width: 1400px;
   margin: 0 auto;
 }
-header h1 { margin: 0 0 0.3rem; font-size: 1.6rem; }
-header p { margin: 0; color: var(--muted); }
+.site-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.4rem;
+}
+.site-logo {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-family: var(--mono);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+header h1 .prompt { color: var(--green); margin-right: 0.4rem; }
+header p { margin: 0; color: var(--muted); font-size: 0.9rem; }
 header a { color: var(--accent); text-decoration: none; }
 main { max-width: 1400px; margin: 0 auto; padding: 0.5rem 1.5rem 3rem; }
 
@@ -82,8 +105,8 @@ main { max-width: 1400px; margin: 0 auto; padding: 0.5rem 1.5rem 3rem; }
 }
 .chip:hover { border-color: var(--accent); color: var(--fg); }
 .chip.active {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--green);
+  border-color: var(--green);
   color: #10101a;
   font-weight: 600;
 }
@@ -196,7 +219,7 @@ nav.pager a:hover { text-decoration: underline; }
   flex-wrap: wrap;
 }
 .cta {
-  background: var(--accent);
+  background: var(--green);
   color: #10101a;
   border-radius: 999px;
   padding: 0.55rem 1.3rem;
@@ -322,6 +345,9 @@ INDEX_TMPL = """\
 <meta name="twitter:title" content="Zellij Theme Gallery">
 <meta name="twitter:description" content="Screenshots of all {count} zellij built-in themes">
 <meta name="twitter:image" content="{site}/images/dracula.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v={css_hash}">
 <script type="application/ld+json">
 {{"@context":"https://schema.org","@type":"WebSite","name":"Zellij Theme Gallery","url":"{site}/","description":"Screenshots of all {count} zellij built-in themes"}}
@@ -330,7 +356,10 @@ INDEX_TMPL = """\
 <body>
 <a href="#main-content" class="skip-link">Skip to content</a>
 <header>
-  <h1>Zellij Theme Gallery</h1>
+  <div class="site-brand">
+    <img src="zellij-logo.png" alt="Zellij logo" class="site-logo">
+    <h1><span class="prompt">❯</span>Zellij Theme Gallery</h1>
+  </div>
   <p>{count} built-in themes of <a href="https://zellij.dev">zellij</a>,
      screenshotted automatically. Click a theme for the full image and setup command.
      Press <kbd>/</kbd> to search, <kbd>Enter</kbd> to open the first match.</p>
@@ -387,6 +416,9 @@ DETAIL_TMPL = """\
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="zellij theme: {name}">
 <meta name="twitter:image" content="{site}/images/{name}.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style.css?v={css_hash}">
 {prefetch}
 <script>{copy_js}</script>
