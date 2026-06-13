@@ -324,7 +324,7 @@ INDEX_TMPL = """\
 CARD_TMPL = """\
     <a class="card" data-name="{name}" data-variant="{variant}" href="themes/{name}.html">
       <span class="thumb-wrap">
-        <img src="thumbs/{name}.webp?v={img_hash}" alt="zellij {name} theme"
+        <img src="thumbs/{name}.webp?v={thumb_hash}" alt="zellij {name} theme"
              width="{tw}" height="{th}" loading="lazy"
              style="view-transition-name: theme-{name}">
       </span>
@@ -418,16 +418,17 @@ def main():
         th = round(crop.height * ratio)
         variant = "light" if is_light(img) else "dark"
         img_hash = hashlib.md5(img_path.read_bytes()).hexdigest()[:8]
-        meta[img_path.stem] = (variant, THUMB_WIDTH, th, img.width, img.height, img_hash)
 
         out = thumbs / f"{img_path.stem}.webp"
         if not (out.exists() and out.stat().st_mtime >= img_path.stat().st_mtime):
             crop.resize((THUMB_WIDTH, th), Image.LANCZOS).save(out, "WEBP", quality=80)
+        thumb_hash = hashlib.md5(out.read_bytes()).hexdigest()[:8]
+        meta[img_path.stem] = (variant, THUMB_WIDTH, th, img.width, img.height, img_hash, thumb_hash)
 
     cards = "".join(
         CARD_TMPL.format(
             name=n, variant=meta[n][0], tw=meta[n][1], th=meta[n][2],
-            img_hash=meta[n][5],
+            img_hash=meta[n][5], thumb_hash=meta[n][6],
         )
         for n in names
     )
