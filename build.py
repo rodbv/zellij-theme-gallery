@@ -8,7 +8,6 @@
 Outputs: thumbs/*.webp, index.html, themes/<name>.html, style.css
 """
 
-import colorsys
 import hashlib
 from pathlib import Path
 
@@ -104,7 +103,8 @@ kbd {
 }
 .card {
   display: flex;
-  align-items: stretch;
+  align-items: center;
+  gap: 0.8rem;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -124,33 +124,12 @@ kbd {
   transition: transform 0.15s ease-out;
 }
 .card:hover img { transform: scale(1.06); }
-.card-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-width: 0;
-  align-self: stretch;
-  padding: 0.6rem 0.8rem 0;
-}
 .card .name {
   font-family: monospace;
   font-size: 0.9rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.color-dots {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 0.5rem;
-}
-.color-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  flex-shrink: 0;
 }
 .no-results { color: var(--muted); display: none; }
 
@@ -349,10 +328,7 @@ CARD_TMPL = """\
              width="{tw}" height="{th}" loading="lazy"
              style="view-transition-name: theme-{name}">
       </span>
-      <span class="card-info">
-        <span class="name">{name}</span>
-        <span class="color-dots">{dots}</span>
-      </span>
+      <span class="name">{name}</span>
     </a>
 """
 
@@ -425,23 +401,7 @@ def is_light(img: Image.Image) -> bool:
     return 0.2126 * r + 0.7152 * g + 0.0722 * b > 127
 
 
-def theme_colors(img: Image.Image, max_colors: int = 6, min_dist: int = 25) -> list:
-    """Distinct colors from the zellij tab-bar (top strip), vivid colors first."""
-    tab_bar = img.convert("RGB").crop((0, 0, img.width, 22))
-    q = tab_bar.quantize(colors=max_colors, method=Image.Quantize.MEDIANCUT)
-    palette = q.getpalette()
-    all_colors = [(palette[i * 3], palette[i * 3 + 1], palette[i * 3 + 2])
-                  for i in range(max_colors)]
-    def chroma(rgb):
-        r, g, b = [x / 255 for x in rgb]
-        _, s, v = colorsys.rgb_to_hsv(r, g, b)
-        return s * v
-    result = []
-    for r, g, b in sorted(all_colors, key=chroma, reverse=True):
-        if all((r - er) ** 2 + (g - eg) ** 2 + (b - eb) ** 2 >= min_dist ** 2
-               for er, eg, eb in result):
-            result.append((r, g, b))
-    return result
+CROP_HEIGHT = 200  # px — tab-bar + top content rows
 
 
 def main():
@@ -453,25 +413,21 @@ def main():
     meta = {}  # name -> (variant, thumb_w, thumb_h, img_w, img_h, img_hash)
     for img_path in images:
         img = Image.open(img_path)
-        ratio = THUMB_WIDTH / img.width
-        th = round(img.height * ratio)
+        crop = img.crop((0, 0, img.width, CROP_HEIGHT))
+        ratio = THUMB_WIDTH / crop.width
+        th = round(crop.height * ratio)
         variant = "light" if is_light(img) else "dark"
         img_hash = hashlib.md5(img_path.read_bytes()).hexdigest()[:8]
-        colors = theme_colors(img)
-        dots = "".join(
-            f'<span class="color-dot" style="background:#{r:02x}{g:02x}{b:02x}" title="#{r:02x}{g:02x}{b:02x}"></span>'
-            for r, g, b in colors
-        )
-        meta[img_path.stem] = (variant, THUMB_WIDTH, th, img.width, img.height, img_hash, dots)
+        meta[img_path.stem] = (variant, THUMB_WIDTH, th, img.width, img.height, img_hash)
 
         out = thumbs / f"{img_path.stem}.webp"
         if not (out.exists() and out.stat().st_mtime >= img_path.stat().st_mtime):
-            img.resize((THUMB_WIDTH, th), Image.LANCZOS).save(out, "WEBP", quality=80)
+            crop.resize((THUMB_WIDTH, th), Image.LANCZOS).save(out, "WEBP", quality=80)
 
     cards = "".join(
         CARD_TMPL.format(
             name=n, variant=meta[n][0], tw=meta[n][1], th=meta[n][2],
-            img_hash=meta[n][5], dots=meta[n][6],
+            img_hash=meta[n][5],
         )
         for n in names
     )
@@ -486,21 +442,21 @@ def main():
     detail_dir = ROOT / "themes"
     detail_dir.mkdir(exist_ok=True)
     for i, name in enumerate(names):
-        prev = names[i - 1] if i > 0 else None
-        nxt = names[i + 1] if i < len(names) - 1 else None
+        prev = names[i - 1]  # wraps: first → last
+        nxt = names[(i + 1) % len(names)]  # wraps: last → first
         prefetch = "".join(
             f'<link rel="prefetch" href="../images/{n}.png">\n'
-            for n in (prev, nxt) if n
+            for n in (prev, nxt)
         )
         (detail_dir / f"{name}.html").write_text(
             DETAIL_TMPL.format(
                 name=name, site=SITE_URL, copy_js=COPY_JS, detail_js=DETAIL_JS,
                 footer=FOOTER, css_hash=css_hash,
                 iw=meta[name][3], ih=meta[name][4], img_hash=meta[name][5], prefetch=prefetch,
-                prev_link=f'<a href="{prev}.html">&larr; {prev}</a>' if prev else "",
-                next_link=f'<a href="{nxt}.html">{nxt} &rarr;</a>' if nxt else "",
-                prev_js=f'"{prev}.html"' if prev else "null",
-                next_js=f'"{nxt}.html"' if nxt else "null",
+                prev_link=f'<a href="{prev}.html">&larr; Prev: {prev}</a>',
+                next_link=f'<a href="{nxt}.html">Next: {nxt} &rarr;</a>',
+                prev_js=f'"{prev}.html"',
+                next_js=f'"{nxt}.html"',
             )
         )
 

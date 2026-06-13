@@ -7,8 +7,9 @@
 <meta property="og:title" content="zellij theme: vesper">
 <meta property="og:description" content="Screenshot and setup command for the vesper zellij theme">
 <meta property="og:image" content="https://rodbv.github.io/zellij-theme-gallery/images/vesper.png">
-<link rel="stylesheet" href="../style.css?v=bda0cfc9">
+<link rel="stylesheet" href="../style.css?v=76b7c9fc">
 <link rel="prefetch" href="../images/tokyo-night.png">
+<link rel="prefetch" href="../images/ansi.png">
 
 <script>function copyCmd(btn) {
   const code = btn.parentElement.querySelector('code').textContent;
@@ -30,8 +31,8 @@
 </header>
 <main>
   <nav class="pager">
-    <span><a href="tokyo-night.html">&larr; tokyo-night</a></span>
-    <span></span>
+    <span><a href="tokyo-night.html">&larr; Prev: tokyo-night</a></span>
+    <span><a href="ansi.html">Next: ansi &rarr;</a></span>
   </nav>
   <a class="detail-img-link" href="../images/vesper.png?v=92558fd8" target="_blank" rel="noopener">
     <img class="detail-img" src="../images/vesper.png?v=92558fd8" alt="zellij vesper theme"
@@ -65,7 +66,7 @@
 
 <script>
 const PREV = "tokyo-night.html";
-const NEXT = null;
+const NEXT = "ansi.html";
 document.addEventListener('keydown', e => {
   if (e.target.closest('input, textarea')) return;
   if (e.key === 'ArrowLeft' && PREV) location.href = PREV;
