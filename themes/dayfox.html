@@ -4,10 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>dayfox — Zellij Theme Gallery</title>
+<meta name="description" content="Screenshot and setup command for the dayfox zellij theme.">
+<link rel="canonical" href="https://rodbv.github.io/zellij-theme-gallery/themes/dayfox.html">
+<meta property="og:type" content="website">
 <meta property="og:title" content="zellij theme: dayfox">
 <meta property="og:description" content="Screenshot and setup command for the dayfox zellij theme">
 <meta property="og:image" content="https://rodbv.github.io/zellij-theme-gallery/images/dayfox.png">
-<link rel="stylesheet" href="../style.css?v=7a76129c">
+<meta property="og:url" content="https://rodbv.github.io/zellij-theme-gallery/themes/dayfox.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="zellij theme: dayfox">
+<meta name="twitter:image" content="https://rodbv.github.io/zellij-theme-gallery/images/dayfox.png">
+<link rel="stylesheet" href="../style.css?v=62185941">
 <link rel="prefetch" href="../images/cyber-noir.png">
 <link rel="prefetch" href="../images/dracula.png">
 
@@ -22,7 +29,9 @@
 </script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to content</a>
 <header class="detail-header">
+  <button id="theme-toggle" aria-label="Toggle colour scheme"></button>
   <div>
     <a class="back" href="../index.html">&larr; all themes</a>
     <h1><code>dayfox</code></h1>
@@ -30,6 +39,7 @@
   <a class="cta" href="#use">Use this theme</a>
 </header>
 <main>
+<main id="main-content">
   <nav class="pager">
     <span><a href="cyber-noir.html">&larr; Prev: cyber-noir</a></span>
     <span><a href="dracula.html">Next: dracula &rarr;</a></span>
@@ -65,6 +75,26 @@
 </footer>
 
 <script>
+(function() {
+  const KEY = 'zjgallery-theme';
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
+  function isLight() {
+    return root.dataset.theme === 'light' ||
+      (!root.dataset.theme && window.matchMedia('(prefers-color-scheme: light)').matches);
+  }
+  function applyIcon() { btn.textContent = isLight() ? '☾' : '☀'; }
+  const saved = localStorage.getItem(KEY);
+  if (saved) root.dataset.theme = saved;
+  applyIcon();
+  btn.addEventListener('click', () => {
+    const next = isLight() ? 'dark' : 'light';
+    root.dataset.theme = next;
+    localStorage.setItem(KEY, next);
+    applyIcon();
+  });
+})();
+
 const PREV = "cyber-noir.html";
 const NEXT = "dracula.html";
 document.addEventListener('keydown', e => {

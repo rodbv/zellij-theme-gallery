@@ -4,10 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>tokyo-night-light — Zellij Theme Gallery</title>
+<meta name="description" content="Screenshot and setup command for the tokyo-night-light zellij theme.">
+<link rel="canonical" href="https://rodbv.github.io/zellij-theme-gallery/themes/tokyo-night-light.html">
+<meta property="og:type" content="website">
 <meta property="og:title" content="zellij theme: tokyo-night-light">
 <meta property="og:description" content="Screenshot and setup command for the tokyo-night-light zellij theme">
 <meta property="og:image" content="https://rodbv.github.io/zellij-theme-gallery/images/tokyo-night-light.png">
-<link rel="stylesheet" href="../style.css?v=7a76129c">
+<meta property="og:url" content="https://rodbv.github.io/zellij-theme-gallery/themes/tokyo-night-light.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="zellij theme: tokyo-night-light">
+<meta name="twitter:image" content="https://rodbv.github.io/zellij-theme-gallery/images/tokyo-night-light.png">
+<link rel="stylesheet" href="../style.css?v=62185941">
 <link rel="prefetch" href="../images/tokyo-night-dark.png">
 <link rel="prefetch" href="../images/tokyo-night-storm.png">
 
@@ -22,7 +29,9 @@
 </script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to content</a>
 <header class="detail-header">
+  <button id="theme-toggle" aria-label="Toggle colour scheme"></button>
   <div>
     <a class="back" href="../index.html">&larr; all themes</a>
     <h1><code>tokyo-night-light</code></h1>
@@ -30,6 +39,7 @@
   <a class="cta" href="#use">Use this theme</a>
 </header>
 <main>
+<main id="main-content">
   <nav class="pager">
     <span><a href="tokyo-night-dark.html">&larr; Prev: tokyo-night-dark</a></span>
     <span><a href="tokyo-night-storm.html">Next: tokyo-night-storm &rarr;</a></span>
@@ -65,6 +75,26 @@
 </footer>
 
 <script>
+(function() {
+  const KEY = 'zjgallery-theme';
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
+  function isLight() {
+    return root.dataset.theme === 'light' ||
+      (!root.dataset.theme && window.matchMedia('(prefers-color-scheme: light)').matches);
+  }
+  function applyIcon() { btn.textContent = isLight() ? '☾' : '☀'; }
+  const saved = localStorage.getItem(KEY);
+  if (saved) root.dataset.theme = saved;
+  applyIcon();
+  btn.addEventListener('click', () => {
+    const next = isLight() ? 'dark' : 'light';
+    root.dataset.theme = next;
+    localStorage.setItem(KEY, next);
+    applyIcon();
+  });
+})();
+
 const PREV = "tokyo-night-dark.html";
 const NEXT = "tokyo-night-storm.html";
 document.addEventListener('keydown', e => {
